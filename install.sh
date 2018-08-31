@@ -1,0 +1,1 @@
+rsync -avz --delete  dist/  lxy:/home/project/daren

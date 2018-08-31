@@ -1,5 +1,9 @@
 <template>
   <div class="app-container">
+    <div>
+      <el-input/>
+    </div>
+    <br>
     <el-table
       v-loading="listLoading"
       :data="list"
