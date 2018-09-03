@@ -29,7 +29,7 @@ export const constantRouterMap = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: 'Dashboard',
+    name: '首页',
     hidden: true,
     children: [{
       path: 'dashboard',
@@ -38,24 +38,24 @@ export const constantRouterMap = [
   },
 
   {
-    path: '/example',
+    path: '/user',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    redirect: '/user/setting',
+    name: 'setting',
+    meta: { title: '用户设置', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
+        path: 'setting',
+        name: 'setting',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: '用户列表', icon: 'table' }
+      },
+      {
+        path: 'add',
+        name: 'add',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '新增用户', icon: 'tree' }
       }
-      // {
-      //   path: 'tree',
-      //   name: 'Tree',
-      //   component: () => import('@/views/tree/index'),
-      //   meta: { title: 'Tree', icon: 'tree' }
-      // }
     ]
   },
 

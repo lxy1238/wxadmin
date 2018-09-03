@@ -1,12 +1,12 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">后台管理模版</h3>
-      <el-form-item prop="username">
+      <h3 class="title">后台管理通用模版</h3>
+      <el-form-item prop="name">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="username" />
+        <el-input v-model="loginForm.name" name="name" type="text" auto-complete="on" placeholder="username" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
@@ -43,8 +43,8 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
+      if (!value) {
+        callback(new Error('请输入用户名'))
       } else {
         callback()
       }
@@ -58,11 +58,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        name: 'admin',
         password: 'admin'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        name: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
@@ -78,16 +78,25 @@ export default {
       }
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
+          try {
+            let res = await this.$store.dispatch('Login', this.loginForm)
+              if(res.code === 200) {
+              this.loading = false
+              this.$router.push({ path: '/' })
+            } else {
+              throw new Error('error')
+            }
+          } catch (error) {
+            this.$message({
+              showClose: true,
+              message: '用户名或者密码不正确!',
+              type: 'error'
+             })
             this.loading = false
-            this.$router.push({ path: '/' })
-          }).catch(() => {
-            this.$router.push({ path: '/' })
-            this.loading = false
-          })
+          }
         } else {
           console.log('error submit!!')
           return false
@@ -117,8 +126,9 @@ $light_gray:#eee;
       color: $light_gray;
       height: 47px;
       &:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
+        -webkit-box-shadow: 0 0 0px 1000px rgb(40, 52, 67) inset !important;
         -webkit-text-fill-color: #fff !important;
+        caret-color: #fff !important;
       }
     }
   }
@@ -142,10 +152,12 @@ $light_gray:#eee;
   width: 100%;
   background-color: $bg;
   .login-form {
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 520px;
+    // position: absolute;
+    // left: 0;
+    // right: 0;
+    display: block;
+    max-width: 520px;
+    width: 100%;
     padding: 35px 35px 15px 35px;
     margin: 120px auto;
   }
